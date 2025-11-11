@@ -55,27 +55,78 @@ if __name__ == "__main__":
     game = Game()
 
     def print_board():
+        def get_icon(type: str, is_white: bool):
+            if type == "king" and is_white:
+                return "♔"
+            elif type == "king" and not is_white:
+                return "♚"
+            elif type == "queen" and is_white:
+                return "♕"
+            elif type == "queen" and not is_white:
+                return "♛"
+            elif type == "rook" and is_white:
+                return "♖"
+            elif type == "rook" and not is_white:
+                return "♜"
+            elif type == "bishop" and is_white:
+                return "♗"
+            elif type == "bishop" and not is_white:
+                return "♝"
+            elif type == "knight" and is_white:
+                return "♘"
+            elif type == "knight" and not is_white:
+                return "♞"
+            elif type == "pawn" and is_white:
+                return "♙"
+            elif type == "pawn" and not is_white:
+                return "♟"
+
         for rank in reversed(range(1, 9)):
             for file in range(1, 9):
                 for piece in game.position["state"]:
                     if piece["file"] == file and piece["rank"] == rank:
                         print(
-                            ("\033[37m" if piece["is_white"] else "\033[30m"),
-                            {
-                                "pawn": "-",
-                                "rook": "R",
-                                "knight": "N",
-                                "bishop": "B",
-                                "king": "K",
-                                "queen": "Q"
-                            }[piece["piece"]],
+                            ("\033[37m" if piece["is_white"] else "\033[96m"),
+                            get_icon(piece["piece"], piece["is_white"]),
                             end=" "
                         )
                         break
                 else:
-                    print("\033[0m * ", end="")
+                    print("\033[90m * ", end="")
             print()
+        print("\033[0m")
+
+    def interpret_algebraic(move: str):
+        if len(move) != 2:
+            return None
+        if move[0] not in "abcdefgh" or move[1] not in "12345678":
+            return None
+        return (
+            {
+                "a": 1,
+                "b": 2,
+                "c": 3,
+                "d": 4,
+                "e": 5,
+                "f": 6,
+                "g": 7,
+                "h": 8
+            }[move[0]],
+            int(move[1])
+        )
 
     print_board()
 
-    move = input("White move: ")
+    running = True
+    while running:
+
+        origin = None
+        destination = None
+
+        while origin == None:
+            origin = interpret_algebraic(input("White move origin: "))
+
+        while destination == None:
+            destination = interpret_algebraic(input("White move destination: "))
+
+    game.move(origin, destination, True)
