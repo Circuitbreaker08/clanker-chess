@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script>
+            document.addEventListener('DOMContentLoaded', async function() {
+                response = await fetch("http://192.168.86.69:7000/", {method: 'get', mode: 'cors'});
+                json = await reponse.json()
+                console.log(json)
+                document.getElementById("users").innerHTML = await json;
+            });
+        </script>
+    </head>
+    <body>
+        <div id="users"></div>
+    </body>
+</html>

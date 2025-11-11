@@ -1,0 +1,202 @@
+{
+    "en_passant": null,
+    "castle_king": true,
+    "castle_queen": true,
+    "state": [
+        {
+            "piece": "pawn",
+            "is_white": true,
+            "file": 1,
+            "rank": 2
+        },
+        {
+            "piece": "pawn",
+            "is_white": true,
+            "file": 2,
+            "rank": 2
+        },
+        {
+            "piece": "pawn",
+            "is_white": true,
+            "file": 3,
+            "rank": 2
+        },
+        {
+            "piece": "pawn",
+            "is_white": true,
+            "file": 4,
+            "rank": 2
+        },
+        {
+            "piece": "pawn",
+            "is_white": true,
+            "file": 5,
+            "rank": 2
+        },
+        {
+            "piece": "pawn",
+            "is_white": true,
+            "file": 6,
+            "rank": 2
+        },
+        {
+            "piece": "pawn",
+            "is_white": true,
+            "file": 7,
+            "rank": 2
+        },
+        {
+            "piece": "pawn",
+            "is_white": true,
+            "file": 8,
+            "rank": 2
+        },
+
+        {
+            "piece": "rook",
+            "is_white": true,
+            "file": 1,
+            "rank": 1
+        },
+        {
+            "piece": "knight",
+            "is_white": true,
+            "file": 2,
+            "rank": 1
+        },
+        {
+            "piece": "bishop",
+            "is_white": true,
+            "file": 3,
+            "rank": 1
+        },
+        {
+            "piece": "queen",
+            "is_white": true,
+            "file": 4,
+            "rank": 1
+        },
+        {
+            "piece": "king",
+            "is_white": true,
+            "file": 5,
+            "rank": 1
+        },
+        {
+            "piece": "bishop",
+            "is_white": true,
+            "file": 6,
+            "rank": 1
+        },
+        {
+            "piece": "knight",
+            "is_white": true,
+            "file": 7,
+            "rank": 1
+        },
+        {
+            "piece": "rook",
+            "is_white": true,
+            "file": 8,
+            "rank": 1
+        },
+
+        {
+            "piece": "pawn",
+            "is_white": false,
+            "file": 1,
+            "rank": 7
+        },
+        {
+            "piece": "pawn",
+            "is_white": false,
+            "file": 2,
+            "rank": 7
+        },
+        {
+            "piece": "pawn",
+            "is_white": false,
+            "file": 3,
+            "rank": 7
+        },
+        {
+            "piece": "pawn",
+            "is_white": false,
+            "file": 4,
+            "rank": 7
+        },
+        {
+            "piece": "pawn",
+            "is_white": false,
+            "file": 5,
+            "rank": 7
+        },
+        {
+            "piece": "pawn",
+            "is_white": false,
+            "file": 6,
+            "rank": 7
+        },
+        {
+            "piece": "pawn",
+            "is_white": false,
+            "file": 7,
+            "rank": 7
+        },
+        {
+            "piece": "pawn",
+            "is_white": false,
+            "file": 8,
+            "rank": 7
+        },
+
+        {
+            "piece": "rook",
+            "is_white": false,
+            "file": 1,
+            "rank": 8
+        },
+        {
+            "piece": "knight",
+            "is_white": false,
+            "file": 2,
+            "rank": 8
+        },
+        {
+            "piece": "bishop",
+            "is_white": false,
+            "file": 3,
+            "rank": 8
+        },
+        {
+            "piece": "queen",
+            "is_white": false,
+            "file": 4,
+            "rank": 8
+        },
+        {
+            "piece": "king",
+            "is_white": false,
+            "file": 5,
+            "rank": 8
+        },
+        {
+            "piece": "bishop",
+            "is_white": false,
+            "file": 6,
+            "rank": 8
+        },
+        {
+            "piece": "knight",
+            "is_white": false,
+            "file": 7,
+            "rank": 8
+        },
+        {
+            "piece": "rook",
+            "is_white": false,
+            "file": 8,
+            "rank": 8
+        }
+    ]
+}
