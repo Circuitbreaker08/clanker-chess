@@ -18,12 +18,30 @@ class Game:
         return None
     
     def move(self, origin: tuple[int, int], target: tuple[int, int], is_white: bool, promotion: None | str = None) -> bool:
+        """
+        Returns `True` if move is successful
+        """
+
         piece = self.piece_at(origin)
         if origin == target or piece == None or piece["is_white"] != is_white or self.piece_at(target)["is_white"] == is_white:
             return False
         
+        # TODO - Check for self check if the move goes through
+        
         if piece == "pawn":
-            pass
+            direction = (1 if piece["is_white"] else -1)[piece["is_white"]]
+            if (
+                origin[0] == target[0] and # Same file
+                self.piece_at([origin[0], origin[1] + direction]) == None and # Next rank unobstructed
+                (
+                    target[1] == origin[1] + direction or # Single advance
+                    (  # Double advance
+                        origin[1] == (2 if piece["piece_white"] else 7) and # Correct starting rank
+                        origin[1] + 2 * direction == target[1] # Acceptable landing distance
+                    )
+                )
+            ):
+                return True
         elif piece == "rook":
             if origin[0] != target[0] and origin[1] != target[1]:
                 return False
