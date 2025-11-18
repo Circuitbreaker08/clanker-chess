@@ -1,7 +1,9 @@
 {
     "en_passant": null,
-    "castle_king": true,
-    "castle_queen": true,
+    "white_castle_king": true,
+    "white_castle_queen": true,
+    "black_castle_king": true,
+    "black_castle_queen": true,
     "state": [
         {
             "piece": "pawn",

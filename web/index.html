@@ -1,13 +1,21 @@
 <!DOCTYPE html>
 <html>
     <head>
-
+        <script type="module">
+            import {test} from "./getCookieByName.js";
+            document.addEventListener('DOMContentLoaded', function() {
+                test();
+            });
+        </script>
     </head>
     <body>
         <h1>Clanker Chess</h1>
         <br>
-        <a href="./users.html"><h2>User Index</h2></a>
-        <a href="./games.html"><h2>Games Index</h2></a>
-        <a href="./leaderboards.html"><h2>Leaderboards</h2></a>
+        <div>
+            <a id="account"></a>
+            <a href="./users.html"><h2>User Index</h2></a>
+            <a href="./games.html"><h2>Games Index</h2></a>
+            <a href="./leaderboards.html"><h2>Leaderboards</h2></a>
+        </div>
     </body>
 </html>

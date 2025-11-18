@@ -1,12 +1,12 @@
-#include <memory>
+#include <optional>
 #include <utility>
 
 struct Position {
-    bool castle_king;
-    bool castle_queen;
-    std::unique_ptr<std::pair<int, int>> en_passant;
-
-    
+    bool white_castle_king;
+    bool white_castle_queen;
+    bool black_castle_king;
+    bool black_castle_queen;
+    std::optional<std::pair<int, int>> en_passant;
 };
 
 class Game {
