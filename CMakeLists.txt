@@ -17,6 +17,6 @@ target_link_libraries(test PRIVATE ${JSONCPP_LIBRARIES})
 
 # <--->
 
-project(test CXX)
+project(main CXX)
 
 add_executable(main src/main.cpp)
