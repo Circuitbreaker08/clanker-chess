@@ -12,30 +12,19 @@
 
 crow::json::rvalue default_board;
 
+typedef std::shared_ptr<Tracker> tracker;
+
+tracker counter;
+tracker token_registry;
+
 int main() {
     // Set cwd to file location
     std::filesystem::current_path(std::filesystem::canonical("/proc/self/exe").parent_path());
 
     default_board = load_json("data/default_board.json");
 
-    // Ensure files are ready
-    // TODO - start using Tracker class
-    crow::json::wvalue counter;
-    if (!std::filesystem::exists("data/counter.json")) {
-        counter["id"] = 0;
-        counter["token"] = 0;
-        counter["game"] = 0;
-        write_file("data/counter.json", counter.dump());
-    } else {
-        counter = load_json("data/counter.json");
-    }
-
-    crow::json::wvalue token_registry;
-    if (!std::filesystem::exists("/data/token_registry.json")) {
-        
-    } else {
-        token_registry = load_json("data/token_registry.json");
-    }
+    counter = Tracker::get_ptr("data/counter.json");
+    token_registry = Tracker::get_ptr("data/token_registry.json");
 
     crow::SimpleApp app;
 

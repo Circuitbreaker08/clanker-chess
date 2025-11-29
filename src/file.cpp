@@ -2,6 +2,7 @@
 #include <string>
 #include <fstream>
 #include <mutex>
+#include <memory>
 
 #include <crow.h>
 #include "file.hpp"
@@ -36,23 +37,19 @@ crow::json::rvalue load_json(std::string path) {
     return crow::json::load(read_file(path));
 }
 
-// TODO - integrate into header properly and use in tracking of files in main
-
-struct Tracker {
-    Tracker(std::string path) {
-        this->path = path;
-        if (!std::filesystem::exists(path)) {
-            write_file(path, "{}");
-        } else {
-            json = load_json(path);
-        }
+Tracker::Tracker(std::string path) {
+    this->path = path;
+    if (!std::filesystem::exists(path)) {
+        write_file(path, "{}");
+    } else {
+        json = load_json(path);
     }
+}
 
-    void save() {
-        write_file(path, json.dump());
-    }
+std::shared_ptr<Tracker> Tracker::get_ptr(std::string path) {
+    return std::make_shared<Tracker>(Tracker(path));
+}
 
-    std::string path;
-    crow::json::wvalue json;
-    std::mutex mutex;
-};
+void Tracker::save() {
+    write_file(path, json.dump());
+}
