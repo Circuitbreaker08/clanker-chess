@@ -3,3 +3,10 @@
 !*/
 
 build/*
+
+data/*
+!data/
+!data/*/
+!data/default_board.json
+
+.vscode

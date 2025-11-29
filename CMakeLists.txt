@@ -5,18 +5,22 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "..")
 
 include_directories(./include)
 
-project(test CXX)
+#project(test CXX)
 
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(JSONCPP REQUIRED jsoncpp)
+#find_package(PkgConfig REQUIRED)
+#pkg_check_modules(JSONCPP REQUIRED jsoncpp)
 
-add_executable(test src/test.cpp)
+#add_executable(test src/test.cpp)
 
-target_include_directories(test PRIVATE ${JSONCPP_INCLUDE_DIRS})
-target_link_libraries(test PRIVATE ${JSONCPP_LIBRARIES})
+#target_include_directories(test PRIVATE ${JSONCPP_INCLUDE_DIRS})
+#target_link_libraries(test PRIVATE ${JSONCPP_LIBRARIES})
 
 # <--->
 
 project(main CXX)
 
-add_executable(main src/main.cpp)
+add_executable(
+    main
+    src/main.cpp
+    src/file.cpp
+)
