@@ -25,7 +25,7 @@ struct Tracker {
 
     std::string path;
     crow::json::wvalue json;
-    std::shared_ptr<std::mutex> mutex;
+    std::shared_ptr<std::mutex> mutex = std::make_shared<std::mutex>();
 
     protected:
     static bool initialized;

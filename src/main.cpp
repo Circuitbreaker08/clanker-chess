@@ -12,15 +12,15 @@
 
 crow::json::rvalue default_board;
 
-Tracker counter {"data/counter.json"};
-Tracker token_registry {"data/token_registry.json", [](crow::json::wvalue& json){
+Tracker token_registry {"data/token_registry.json"};
+Tracker counter {"data/counter.json", [](crow::json::wvalue& json){
     json["id"] = 0;
     json["token"] = 0;
     json["game"] = 0;
 }};
 
 int main() {
-    // Set cwd to file location
+    // Set cwd to executable location
     std::filesystem::current_path(std::filesystem::canonical("/proc/self/exe").parent_path());
 
     Tracker::init();

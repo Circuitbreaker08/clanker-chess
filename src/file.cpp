@@ -45,6 +45,7 @@ Tracker::Tracker(std::string path, std::function<void(crow::json::wvalue& json)>
     this->path = path;
     std::thread(
         [](Tracker* tracker, std::function<void(crow::json::wvalue& json)> default_file_contents_init){
+            tracker->mutex->lock();
             while (!Tracker::initialized);
             if (!std::filesystem::exists(tracker->path)) {
                 tracker->json = crow::json::wvalue::object();
@@ -53,6 +54,7 @@ Tracker::Tracker(std::string path, std::function<void(crow::json::wvalue& json)>
             } else {
                 tracker->json = load_json(tracker->path);
             }
+            tracker->mutex->unlock();
         },
         this,
         default_file_contents_init
