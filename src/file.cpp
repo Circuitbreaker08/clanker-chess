@@ -1,8 +1,10 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <thread>
 #include <mutex>
 #include <memory>
+#include <functional>
 
 #include <crow.h>
 #include "file.hpp"
@@ -37,19 +39,34 @@ crow::json::rvalue load_json(std::string path) {
     return crow::json::load(read_file(path));
 }
 
-Tracker::Tracker(std::string path) {
+
+
+Tracker::Tracker(std::string path, std::function<void(crow::json::wvalue& json)> default_file_contents_init) {
     this->path = path;
-    if (!std::filesystem::exists(path)) {
-        write_file(path, "{}");
-    } else {
-        json = load_json(path);
-    }
+    std::thread(
+        [](Tracker* tracker, std::function<void(crow::json::wvalue& json)> default_file_contents_init){
+            while (!Tracker::initialized);
+            if (!std::filesystem::exists(tracker->path)) {
+                tracker->json = crow::json::wvalue::object();
+                default_file_contents_init(tracker->json);
+                tracker->save();
+            } else {
+                tracker->json = load_json(tracker->path);
+            }
+        },
+        this,
+        default_file_contents_init
+    ).detach();
 }
 
-std::shared_ptr<Tracker> Tracker::get_ptr(std::string path) {
-    return std::make_shared<Tracker>(Tracker(path));
+Tracker::Tracker(std::string path) : Tracker::Tracker(path, [](crow::json::wvalue& json){}) {}; 
+
+void Tracker::init() {
+    initialized = true;
 }
 
 void Tracker::save() {
     write_file(path, json.dump());
 }
+
+bool Tracker::initialized = false;
