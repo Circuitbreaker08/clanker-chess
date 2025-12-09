@@ -10,6 +10,12 @@
 
 #include "file.hpp"
 
+void print_headers(const crow::request req) {
+    for (const auto& header : req.headers) {
+        std::cout << header.first << ": " << header.second << std::endl;
+    }
+}
+
 crow::json::rvalue default_board;
 
 Tracker token_registry {"data/token_registry.json"};
@@ -35,12 +41,14 @@ int main() {
     });
 
     CROW_ROUTE(app, "/api/token_validator").methods("POST"_method)
-    ([](const crow::request&, crow::response& res) {
-        //replace cat.jpg with your file path
-        res.set_static_file_info("cat.jpg");
-        res.end();
-
-        // TODO - check if token valid and add a call to the homepage
+    ([](const crow::request& req) {
+        const std::string token = req.get_header_value("token");
+        for (auto& key : token_registry.json.keys()) {
+            if (token == key) {
+                return "{\"valid\": true}";
+            }
+        }
+        return "{\"valid\": false}";
     });
 
     app.port(8765).multithreaded().run();
