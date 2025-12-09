@@ -1,9 +1,30 @@
 <!DOCTYPE html>
 <html>
     <head>
-
+        <script>
+            async function submit() {
+                let token = document.getElementById("token").value;
+                let response = await fetch("/api/token_validator", {
+                    method: "POST",
+                    headers: {
+                        "token": token
+                    }
+                });
+                let json = await response.json();
+                if (await json["valid"]) {
+                    let exp = new Date();
+                    exp.setFullYear(exp.getFullYear() + 1);
+                    document.cookie = `token=${token}; expires=${exp.toUTCString()}}`;
+                    window.location.replace("/index.html");
+                } else {
+                    
+                }
+            }
+        </script>
     </head>
     <body>
-        
+        <label>Token:</label><br>
+        <input type="text" id="token"><br>
+        <button type="button" onclick="submit()">Submit</button>
     </body>
 </html>

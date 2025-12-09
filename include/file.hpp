@@ -1,7 +1,7 @@
 #ifndef CLANKER_FILE
 #define CLANKER_FILE
 
-#include <mutex>
+#include <shared_mutex>
 #include <string>
 #include <memory>
 #include <functional>
@@ -25,7 +25,7 @@ struct Tracker {
 
     std::string path;
     crow::json::wvalue json;
-    std::shared_ptr<std::mutex> mutex = std::make_shared<std::mutex>();
+    std::shared_ptr<std::shared_mutex> mutex = std::make_shared<std::shared_mutex>();
 
     protected:
     static bool initialized;

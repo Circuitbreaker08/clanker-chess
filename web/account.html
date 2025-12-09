@@ -1,7 +1,19 @@
 <!DOCTYPE html>
 <html>
     <head>
-
+        <script type="module">
+            import {test, getCookieByName} from "/utils.js";
+            document.addEventListener('DOMContentLoaded', async function() {
+                let response = await fetch("/api/token_to_uuid", {
+                    method: "POST",
+                    headers: {
+                        "token": getCookieByName("token")
+                    }
+                });
+                let json = await response.json();
+                console.log(json["uuid"]);
+            });
+        </script>
     </head>
     <body>
         
