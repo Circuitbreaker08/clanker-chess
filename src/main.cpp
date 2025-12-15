@@ -2,6 +2,9 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <memory>
+#include <unordered_map>
+#include <exception>
 
 #define CROW_STATIC_DIRECTORY "web/"
 #define CROW_STATIC_ENDPOINT "/<path>"
@@ -10,7 +13,7 @@
 
 #include "file.hpp"
 
-void print_headers(const crow::request req) {
+void print_headers(const crow::request& req) {
     for (const auto& header : req.headers) {
         std::cout << header.first << ": " << header.second << std::endl;
     }
@@ -25,13 +28,36 @@ Tracker counter {"data/counter.json", [](crow::json::wvalue& json){
     json["game"] = 0;
 }};
 
+std::unordered_map<int, std::shared_ptr<Tracker>> user_files;
+
 int main() {
     // Set cwd to executable location
     std::filesystem::current_path(std::filesystem::canonical("/proc/self/exe").parent_path());
 
     Tracker::init();
 
-    default_board = load_json("data/default_board.json");
+    if (!std::filesystem::exists("data/users")) {
+        std::filesystem::create_directory("data/users");
+    }
+
+    for (const auto& file : std::filesystem::directory_iterator("data/users/")) {
+        std::cout << "Loading file " << file.path().string();
+        user_files[
+            std::stoi(
+                file.path().filename().string().substr(0, file.path().filename().string().find("."))
+            )
+        ] = std::make_shared<Tracker>(Tracker(file.path().string()));
+    }
+
+    std::cout << "execute" << std::endl;
+
+    try {
+        default_board = load_json("data/default_board.json");
+    } catch (const std::exception& e) {
+        std::cerr << e.what();
+    }
+
+    std::cout << "execute the post" << std::endl;
 
     crow::SimpleApp app;
 
@@ -67,6 +93,11 @@ int main() {
         }
         token_registry.mutex->unlock_shared();
         return std::string("{\"uuid\": null}");
+    });
+
+    CROW_ROUTE(app, "/api/uuid_lookup/<int>").methods("GET"_method)
+    ([](int uuid) {
+        return uuid;
     });
 
     app.port(8765).multithreaded().run();

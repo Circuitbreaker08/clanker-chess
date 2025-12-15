@@ -39,12 +39,13 @@ crow::json::rvalue load_json(std::string path) {
     return crow::json::load(read_file(path));
 }
 
-
-
 Tracker::Tracker(std::string path, std::function<void(crow::json::wvalue& json)> default_file_contents_init) {
     this->path = path;
     std::thread(
         [](Tracker* tracker, std::function<void(crow::json::wvalue& json)> default_file_contents_init){
+            if (tracker->mutex == nullptr) {
+                std::cerr << "Mutex pointer for " << tracker->path << " is null in thread " << std::this_thread::get_id() << "\n";
+            }
             tracker->mutex->lock();
             while (!Tracker::initialized);
             if (!std::filesystem::exists(tracker->path)) {
