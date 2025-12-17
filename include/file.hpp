@@ -19,16 +19,13 @@ struct Tracker {
 
     Tracker(std::string path, std::function<void(crow::json::wvalue& json)> default_file_contents_init);
 
-    static void init();
+    Tracker();
 
     void save();
 
     std::string path;
     crow::json::wvalue json;
     std::shared_ptr<std::shared_mutex> mutex = std::make_shared<std::shared_mutex>();
-
-    protected:
-    static bool initialized;
 };
 
 #endif

@@ -21,12 +21,8 @@ void print_headers(const crow::request& req) {
 
 crow::json::rvalue default_board;
 
-Tracker token_registry {"data/token_registry.json"};
-Tracker counter {"data/counter.json", [](crow::json::wvalue& json){
-    json["id"] = 0;
-    json["token"] = 0;
-    json["game"] = 0;
-}};
+Tracker token_registry {};
+Tracker counter {};
 
 std::unordered_map<int, std::shared_ptr<Tracker>> user_files;
 
@@ -34,14 +30,19 @@ int main() {
     // Set cwd to executable location
     std::filesystem::current_path(std::filesystem::canonical("/proc/self/exe").parent_path());
 
-    Tracker::init();
+    token_registry = Tracker("data/token_registry.json");
+    counter = Tracker("data/counter.json", [](crow::json::wvalue& json){
+        json["id"] = 0;
+        json["token"] = 0;
+        json["game"] = 0;
+    });
 
     if (!std::filesystem::exists("data/users")) {
         std::filesystem::create_directory("data/users");
     }
 
     for (const auto& file : std::filesystem::directory_iterator("data/users/")) {
-        std::cout << "Loading file " << file.path().string();
+        std::cout << "Loading player file at " + file.path().string() + "\n";
         user_files[
             std::stoi(
                 file.path().filename().string().substr(0, file.path().filename().string().find("."))
@@ -49,15 +50,7 @@ int main() {
         ] = std::make_shared<Tracker>(Tracker(file.path().string()));
     }
 
-    std::cout << "execute" << std::endl;
-
-    try {
-        default_board = load_json("data/default_board.json");
-    } catch (const std::exception& e) {
-        std::cerr << e.what();
-    }
-
-    std::cout << "execute the post" << std::endl;
+    default_board = load_json("data/default_board.json");
 
     crow::SimpleApp app;
 
