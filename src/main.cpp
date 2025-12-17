@@ -42,7 +42,6 @@ int main() {
     }
 
     for (const auto& file : std::filesystem::directory_iterator("data/users/")) {
-        std::cout << "Loading player file at " + file.path().string() + "\n";
         user_files[
             std::stoi(
                 file.path().filename().string().substr(0, file.path().filename().string().find("."))
@@ -90,7 +89,19 @@ int main() {
 
     CROW_ROUTE(app, "/api/uuid_lookup/<int>").methods("GET"_method)
     ([](int uuid) {
-        return uuid;
+        crow::json::wvalue res;
+        {
+            auto it = user_files.find(uuid);
+            if (it == user_files.end()) {
+                res["ok"] = false;
+            } else {
+                user_files[uuid]->mutex->lock_shared();
+                res = crow::json::load(user_files[uuid]->json.dump());
+                user_files[uuid]->mutex->unlock_shared();
+                res["ok"] = true;
+            }
+        }
+        return res;
     });
 
     app.port(8765).multithreaded().run();

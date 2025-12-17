@@ -3,7 +3,7 @@ set(CMAKE_CXX_STANDARD 23)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "..")
 
-add_compile_options("-g")
+#add_compile_options("-g")
 
 include_directories(./include)
 
