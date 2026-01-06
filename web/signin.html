@@ -2,29 +2,32 @@
 <html>
     <head>
         <script>
-            async function submit() {
-                let token = document.getElementById("token").value;
-                let response = await fetch("/api/token_validator", {
-                    method: "POST",
-                    headers: {
-                        "token": token
+            document.addEventListener("DOMContentLoaded", function() {
+                document.getElementById("submit").onclick = async function() {
+                    let token = document.getElementById("token").value;
+                    let response = await fetch("/api/token_validator", {
+                        method: "POST",
+                        headers: {
+                            "token": token
+                        }
+                    });
+                    let json = await response.json();
+                    if (await json["valid"]) {
+                        let exp = new Date();
+                        exp.setFullYear(exp.getFullYear() + 1);
+                        document.cookie = `token=${token}; expires=${exp.toUTCString()}}`;
+                        window.location.replace("/index.html");
+                    } else {
+                        document.getElementById("failure").style.display = "block";
                     }
-                });
-                let json = await response.json();
-                if (await json["valid"]) {
-                    let exp = new Date();
-                    exp.setFullYear(exp.getFullYear() + 1);
-                    document.cookie = `token=${token}; expires=${exp.toUTCString()}}`;
-                    window.location.replace("/index.html");
-                } else {
-                    
-                }
-            }
+                };
+            });
         </script>
     </head>
     <body>
         <label>Token:</label><br>
         <input type="text" id="token"><br>
-        <button type="button" onclick="submit()">Submit</button>
+        <button id="submit" type="button">Submit</button>
+        <h5 id="failure" style="color: red; display: none;">Invalid Token!</h5>
     </body>
 </html>

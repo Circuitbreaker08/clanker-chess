@@ -19,21 +19,23 @@
                 let info_response = await fetch("/api/uuid_lookup/" + uuid_json["uuid"]);
                 let info_json = await info_response.json();
                 if (info_json["ok"]) {
-                    document.getElementById("name_display").innerHTML = "Signed in as " + info_json["name"];
+                    document.getElementById("nameDisplay").innerHTML = "Signed in as " + info_json["name"];
                 } else {
                     deleteCookie("token");
                     window.location.replace("/signin.html");
                 }
             });
 
-            function signOut() {
-                deleteCookie("token");
-                window.location.replace("/index.html");
-            }
+            document.addEventListener("DOMContentLoaded", function() {
+                document.getElementById("signOut").onclick = function() {
+                    deleteCookie("token");
+                    window.location.replace("/index.html");
+                }
+            });
         </script>
     </head>
     <body>
-        <h1 id="name_display"></h1>
-        <button type="button" onclick="signOut()">Sign Out</button>
+        <h1 id="nameDisplay"></h1>
+        <button id="signOut" type="button">Sign Out</button>
     </body>
 </html>

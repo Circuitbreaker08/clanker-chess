@@ -3,8 +3,8 @@
 #include <fstream>
 #include <string>
 #include <memory>
+#include <vector>
 #include <unordered_map>
-#include <exception>
 
 #define CROW_STATIC_DIRECTORY "web/"
 #define CROW_STATIC_ENDPOINT "/<path>"
@@ -21,10 +21,12 @@ void print_headers(const crow::request& req) {
 
 crow::json::rvalue default_board;
 
-Tracker token_registry {};
-Tracker counter {};
+Tracker token_registry;
+Tracker counter;
 
 std::unordered_map<int, std::shared_ptr<Tracker>> user_files;
+
+std::vector<std::shared_ptr<int>> active_games;
 
 int main() {
     // Set cwd to executable location
@@ -102,6 +104,20 @@ int main() {
             }
         }
         return res;
+    });
+
+    CROW_ROUTE(app, "api/game/count").methods("GET"_method)
+    ([]() {
+        int filecount = 0;
+        for (const auto& file : std::filesystem::directory_iterator("data/games/")) {
+            filecount++;
+        }
+        return active_games.size() + filecount;
+    });
+
+    CROW_ROUTE(app, "api/game/<int>").methods("GET"_method)
+    ([](int id) {
+
     });
 
     app.port(8765).multithreaded().run();
