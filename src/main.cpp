@@ -28,9 +28,15 @@ std::unordered_map<int, std::shared_ptr<Tracker>> user_files;
 
 std::vector<std::shared_ptr<int>> active_games;
 
+bool check_admin_password(std::string password) {
+    return password == read_file("admin");
+}
+
 int main() {
     // Set cwd to executable location
     std::filesystem::current_path(std::filesystem::canonical("/proc/self/exe").parent_path());
+
+    std::filesystem::create_directory("data");
 
     token_registry = Tracker("data/token_registry.json");
     counter = Tracker("data/counter.json", [](crow::json::wvalue& json){
@@ -38,11 +44,8 @@ int main() {
         json["token"] = 0;
         json["game"] = 0;
     });
-
-    if (!std::filesystem::exists("data/users")) {
-        std::filesystem::create_directory("data/users");
-    }
-
+    
+    std::filesystem::create_directory("data/users");
     for (const auto& file : std::filesystem::directory_iterator("data/users/")) {
         user_files[
             std::stoi(
@@ -51,7 +54,9 @@ int main() {
         ] = std::make_shared<Tracker>(Tracker(file.path().string()));
     }
 
-    default_board = load_json("data/default_board.json");
+    std::filesystem::create_directory("data/games");
+
+    default_board = load_json("default_board.json");
 
     crow::SimpleApp app;
 
@@ -106,18 +111,33 @@ int main() {
         return res;
     });
 
-    CROW_ROUTE(app, "api/game/count").methods("GET"_method)
+    CROW_ROUTE(app, "/api/game/count").methods("GET"_method)
     ([]() {
         int filecount = 0;
         for (const auto& file : std::filesystem::directory_iterator("data/games/")) {
             filecount++;
         }
-        return active_games.size() + filecount;
+        crow::json::wvalue out = crow::json::wvalue();
+        return "{active:" + std::to_string(active_games.size()) + ", completed: " + std::to_string(filecount) + "}";
     });
 
-    CROW_ROUTE(app, "api/game/<int>").methods("GET"_method)
+    CROW_ROUTE(app, "/api/game/<int>").methods("GET"_method)
     ([](int id) {
+        return id;
+    });
 
+    CROW_ROUTE(app, "/api/admin/new_user").methods("POST"_method)
+    ([](const crow::request& req){
+        if(check_admin_password(req.get_header_value("token"))) {
+            /*
+            TODO - get a system to cache what files are in use
+            have it free up memory periodically
+            and prevent multiple threads making new trackers about it
+            */
+            return true;
+        } else {
+            return false;
+        }
     });
 
     app.port(8765).multithreaded().run();

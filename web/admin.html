@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script type="module">
+            import {getCookieByName} from "/utils.js";
+            document.addEventListener("DOMContentLoaded", async function() {
+                document.getElementById("create_new_user").onclick = async function() {
+                    let username = document.getElementById("new_username").value;
+                    let response = await fetch("/api/admin/new_user", {
+                        method: "POST",
+                        headers: {
+                            "token": getCookieByName("password")
+                        }
+                    });
+                    let json = await response.json();
+                    if (await json["valid"]) {
+                        let exp = new Date();
+                        exp.setFullYear(exp.getFullYear() + 1);
+                        document.cookie = `token=${token}; expires=${exp.toUTCString()}}`;
+                        window.location.replace("/index.html");
+                    } else {
+                        document.getElementById("failure").style.display = "block";
+                    }
+                };
+            });
+        </script>
+    </head>
+    <body>
+        <h1>Add New User</h1>
+        <input type="text" id="new_username"><br>
+        <button id="create_new_user" type="button">Submit</button>
+    </body>
+</html>
