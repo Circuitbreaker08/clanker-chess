@@ -23,6 +23,7 @@ crow::json::rvalue default_board;
 
 Tracker token_registry;
 Tracker counter;
+Tracker taken_usernames;
 
 std::unordered_map<int, std::shared_ptr<Tracker>> user_files;
 
