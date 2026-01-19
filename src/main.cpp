@@ -45,7 +45,7 @@ int main() {
         json["token"] = 0;
         json["game"] = 0;
     });
-    taken_usernames = Tracker("data/taken_usernames.json", [](crow::json::wvalue& json) {
+    taken_usernames = Tracker("data/taken_usernames.json", [](crow::json::wvalue& json){
         json = crow::json::wvalue::list();
     });
     
@@ -131,26 +131,23 @@ int main() {
     });
 
     CROW_ROUTE(app, "/api/admin/new_user").methods("POST"_method)
-    ([](const crow::request& req){
+    ([](const crow::request& req) {
         std::string username = req.get_header_value("username");
-        if (
-            check_admin_password(req.get_header_value("token")) && 
-            [](){
-                taken_usernames.mutex->lock_shared();
-                // Use json.size ig
-                for (auto& name : taken_usernames.json) {
-
+        taken_usernames.mutex->lock();
+        if(
+            check_admin_password(req.get_header_value("token")) && [](){
+                for (int i = 0; i < taken_usernames.json.size(); i++) {
+                    if (taken_usernames.json[i] == username) {
+                        return false;
+                    }
                 }
                 return true;
-            }
+            } 
         ) {
-            /*
-            TODO - get a system to cache what files are in use
-            have it free up memory periodically
-            and prevent multiple threads making new trackers about it
-            */
+           taken_usernames.mutex->unlock();
             return true;
         } else {
+            taken_usernames.mutex->unlock();
             return false;
         }
     });
