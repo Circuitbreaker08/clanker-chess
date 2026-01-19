@@ -9,17 +9,13 @@
                     let response = await fetch("/api/admin/new_user", {
                         method: "POST",
                         headers: {
-                            "token": getCookieByName("password")
+                            "token": getCookieByName("password"),
+                            "username": username
                         }
                     });
                     let json = await response.json();
-                    if (await json["valid"]) {
-                        let exp = new Date();
-                        exp.setFullYear(exp.getFullYear() + 1);
-                        document.cookie = `token=${token}; expires=${exp.toUTCString()}}`;
-                        window.location.replace("/index.html");
-                    } else {
-                        document.getElementById("failure").style.display = "block";
+                    if (!json) {
+                        alert("Failure");
                     }
                 };
             });

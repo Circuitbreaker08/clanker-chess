@@ -45,6 +45,9 @@ int main() {
         json["token"] = 0;
         json["game"] = 0;
     });
+    taken_usernames = Tracker("data/taken_usernames.json", [](crow::json::wvalue& json) {
+        json = crow::json::wvalue::list();
+    });
     
     std::filesystem::create_directory("data/users");
     for (const auto& file : std::filesystem::directory_iterator("data/users/")) {
@@ -129,7 +132,18 @@ int main() {
 
     CROW_ROUTE(app, "/api/admin/new_user").methods("POST"_method)
     ([](const crow::request& req){
-        if(check_admin_password(req.get_header_value("token"))) {
+        std::string username = req.get_header_value("username");
+        if (
+            check_admin_password(req.get_header_value("token")) && 
+            [](){
+                taken_usernames.mutex->lock_shared();
+                // Use json.size ig
+                for (auto& name : taken_usernames.json) {
+
+                }
+                return true;
+            }
+        ) {
             /*
             TODO - get a system to cache what files are in use
             have it free up memory periodically
