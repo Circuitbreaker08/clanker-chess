@@ -134,17 +134,16 @@ int main() {
     ([](const crow::request& req) {
         std::string username = req.get_header_value("username");
         taken_usernames.mutex->lock();
-        if(
-            check_admin_password(req.get_header_value("token")) && [](){
-                for (int i = 0; i < taken_usernames.json.size(); i++) {
-                    if (taken_usernames.json[i] == username) {
-                        return false;
-                    }
+        
+        if(check_admin_password(req.get_header_value("token"))) {
+            for (int i = 0; i < taken_usernames.json.size(); i++) {
+                if (taken_usernames.json[i].dump() == username) {
+                    taken_usernames.mutex->unlock();
+                    return false;
                 }
-                return true;
-            } 
-        ) {
-           taken_usernames.mutex->unlock();
+            }
+            taken_usernames.json += "";
+            taken_usernames.mutex->unlock();
             return true;
         } else {
             taken_usernames.mutex->unlock();
